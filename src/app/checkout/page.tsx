@@ -205,13 +205,13 @@ export default function CheckoutPage() {
 
           {/* Payment Method Banner */}
           <div className="pt-2">
-            <span className="field-label block mb-2">Payment Gateway</span>
-            <div className="p-4 rounded-2xl border border-purple-500/30 bg-purple-500/10 text-white flex items-center justify-between">
+            <span className="field-label block mb-2">Instant Payment</span>
+            <div className="p-4 rounded-2xl border border-white/10 bg-zinc-950/60 text-white flex items-center justify-between">
               <div>
-                <span className="font-bold text-sm text-purple-400">PhonePe PG</span>
+                <span className="font-bold text-sm text-lime-400">Secure Online Checkout</span>
                 <p className="text-[11px] text-zinc-400 mt-0.5">UPI, QR Code, Credit/Debit Cards & Netbanking</p>
               </div>
-              <span className="text-purple-400 font-bold text-lg">🔒</span>
+              <span className="text-lime-400 font-bold text-lg">🔒</span>
             </div>
           </div>
 
@@ -220,7 +220,7 @@ export default function CheckoutPage() {
             disabled={loading}
             className="btn-primary w-full py-4 !rounded-xl text-base hidden lg:block"
           >
-            {loading ? 'Redirecting to PhonePe…' : 'Pay via PhonePe PG'}
+            {loading ? 'Securing your order…' : 'Proceed to Pay Securely'}
           </button>
         </form>
 
@@ -269,10 +269,10 @@ export default function CheckoutPage() {
               disabled={loading}
               className="btn-primary w-full py-4 !rounded-xl text-base block lg:hidden mt-6"
             >
-              {loading ? 'Redirecting to PhonePe…' : 'Pay via PhonePe PG'}
+              {loading ? 'Securing your order…' : 'Proceed to Pay Securely'}
             </button>
             <p className="text-center text-[11px] text-zinc-500 mt-4">
-              🔒 256-bit Encrypted Checkout · Powered by PhonePe
+              🔒 256-bit Encrypted Checkout
             </p>
           </div>
         </div>

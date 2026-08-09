@@ -9,7 +9,7 @@ export const Footer: React.FC = () => {
           Insider<span className="text-lime-400">Memes.</span>
         </p>
         <p className="text-xs text-zinc-400">
-          Made for the hostel, by the hostel. Payments secured by PhonePe PG.
+          Made for the hostel, by the hostel. Secure 256-bit instant payments.
         </p>
         <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-medium text-zinc-400 pt-2">
           <Link href="/terms" className="hover:text-lime-400 transition">

@@ -33,15 +33,15 @@ export default function ContactPage() {
             </p>
             <p>
               <strong className="text-white">Customer Support Email:</strong>{' '}
-              <a href="mailto:support@justmemes.in" className="text-lime-400 underline">
-                support@justmemes.in
+              <a href="mailto:vaishnavs@iisc.ac.in" className="text-lime-400 underline">
+                vaishnavs@iisc.ac.in
               </a>
             </p>
             <p>
               <strong className="text-white">Phone / WhatsApp Support:</strong> +91 98765 43210
             </p>
             <p>
-              <strong className="text-white">Operating Address:</strong> Student Activity Center, Campus Block C, University Tech Park, India
+              <strong className="text-white">Operating Address:</strong> Indian Institute of Science (IISc), CV Raman Rd, Bengaluru, Karnataka 560012, India
             </p>
             <p>
               <strong className="text-white">Support Hours:</strong> Monday – Saturday, 10:00 AM – 7:00 PM IST

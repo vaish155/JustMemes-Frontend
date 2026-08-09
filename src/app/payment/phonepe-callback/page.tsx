@@ -36,14 +36,14 @@ function CallbackContent() {
 
         if (res.success && res.valid) {
           clear();
-          toast('Payment verified via PhonePe!', 'success');
-          router.push(`/order-success?orderId=${encodeURIComponent(orderId!)}&paymentId=${encodeURIComponent(txnId || 'PhonePe')}`);
+          toast('Payment verified successfully!', 'success');
+          router.push(`/order-success?orderId=${encodeURIComponent(orderId!)}&paymentId=${encodeURIComponent(txnId || 'OnlinePay')}`);
         } else {
-          setError('Payment status verification returned non-success from PhonePe.');
+          setError('Payment status verification returned non-success.');
           toast('Payment incomplete or failed.', 'error');
         }
       } catch (err: any) {
-        setError(err.message || 'Error verifying PhonePe payment.');
+        setError(err.message || 'Error verifying payment status.');
         toast(err.message || 'Payment verification failed.', 'error');
       } finally {
         setVerifying(false);
@@ -57,10 +57,10 @@ function CallbackContent() {
     <div className="bg-zinc-900 border border-white/10 rounded-3xl p-10 max-w-md w-full text-center space-y-6 shadow-2xl">
       {verifying ? (
         <>
-          <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto"></div>
+          <div className="w-16 h-16 border-4 border-lime-400/30 border-t-lime-400 rounded-full animate-spin mx-auto"></div>
           <div>
-            <h1 className="font-display text-2xl font-bold text-white">Verifying PhonePe Payment</h1>
-            <p className="text-sm text-zinc-400 mt-2">Connecting to PhonePe servers to confirm transaction status…</p>
+            <h1 className="font-display text-2xl font-bold text-white">Verifying Payment</h1>
+            <p className="text-sm text-zinc-400 mt-2">Connecting to payment gateway to confirm transaction status…</p>
           </div>
         </>
       ) : error ? (
