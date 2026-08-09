@@ -76,6 +76,28 @@ export interface VerifyPaymentResponse {
   };
 }
 
+export interface PhonePeCreateResponse {
+  success: boolean;
+  mock: boolean;
+  redirectUrl: string;
+  merchantTransactionId: string;
+  order?: OrderResponse;
+  error?: string;
+}
+
+export interface PhonePeVerifyPayload {
+  orderId: string;
+  merchantTransactionId?: string;
+  isMock?: boolean;
+}
+
+export interface PhonePeVerifyResponse {
+  success: boolean;
+  valid: boolean;
+  paymentStatus: string;
+  order: OrderResponse;
+}
+
 export type ToastType = 'info' | 'success' | 'error';
 
 export interface ToastMessage {
@@ -83,3 +105,4 @@ export interface ToastMessage {
   message: string;
   type: ToastType;
 }
+

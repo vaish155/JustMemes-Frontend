@@ -24,6 +24,8 @@ export default function CheckoutPage() {
   const { items, subtotal, isEmpty, clear } = useCart();
   const { toast } = useToast();
 
+  const [gateway, setGateway] = useState<'phonepe' | 'razorpay'>('phonepe');
+
   const [form, setForm] = useState<CheckoutFormData>({
     customerName: '',
     contact: '',
@@ -35,7 +37,7 @@ export default function CheckoutPage() {
 
   const [loading, setLoading] = useState(false);
 
-  // Mock payment state
+  // Mock payment state for Razorpay
   const [mockInfo, setMockInfo] = useState<{
     order: OrderResponse;
     razorpay: PaymentCreateResponse['razorpay'];
@@ -96,14 +98,30 @@ export default function CheckoutPage() {
       };
 
       const { order } = await API.placeOrder(payload);
-      const amount = Math.max(1, Math.round((order.total || subtotal) * 100));
 
-      const payment = await API.createPaymentOrder({ orderId: order.id, amount });
+      if (gateway === 'phonepe') {
+        const origin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
+        const phonepeRes = await API.createPhonePePaymentOrder({
+          orderId: order.id,
+          amount: order.total || subtotal,
+          frontendUrl: origin,
+        });
 
-      if (payment.razorpay && payment.razorpay.mock) {
-        setMockInfo({ order, razorpay: payment.razorpay });
+        if (phonepeRes.redirectUrl) {
+          window.location.href = phonepeRes.redirectUrl;
+        } else {
+          toast('PhonePe initialization failed.', 'error');
+          setLoading(false);
+        }
       } else {
-        await openRazorpayCheckout(order, payment.razorpay);
+        const amount = Math.max(1, Math.round((order.total || subtotal) * 100));
+        const payment = await API.createPaymentOrder({ orderId: order.id, amount });
+
+        if (payment.razorpay && payment.razorpay.mock) {
+          setMockInfo({ order, razorpay: payment.razorpay });
+        } else {
+          await openRazorpayCheckout(order, payment.razorpay);
+        }
       }
     } catch (err: any) {
       toast(err.message || 'Checkout failed. Make sure backend is running.', 'error');
@@ -134,7 +152,7 @@ export default function CheckoutPage() {
         theme: { color: '#a3e635' },
         handler: async (resp: any) => {
           try {
-            const res = await API.verifyPayment({
+            await API.verifyPayment({
               orderId: order.id,
               razorpay_order_id: resp.razorpay_order_id,
               razorpay_payment_id: resp.razorpay_payment_id,
@@ -271,12 +289,54 @@ export default function CheckoutPage() {
             </label>
           </div>
 
+          {/* Payment Method Selector */}
+          <div className="pt-2">
+            <span className="field-label block mb-2">Select Payment Method</span>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setGateway('phonepe')}
+                className={`p-4 rounded-2xl border text-left flex flex-col justify-between transition ${
+                  gateway === 'phonepe'
+                    ? 'border-purple-500 bg-purple-500/10 text-white'
+                    : 'border-white/10 bg-zinc-950/40 text-zinc-400 hover:border-white/20'
+                }`}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <span className="font-bold text-sm text-purple-400">PhonePe PG</span>
+                  {gateway === 'phonepe' && <span className="text-purple-400 font-bold">✓</span>}
+                </div>
+                <p className="text-[11px] text-zinc-400 mt-1">UPI, QR Code, Cards & Netbanking</p>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setGateway('razorpay')}
+                className={`p-4 rounded-2xl border text-left flex flex-col justify-between transition ${
+                  gateway === 'razorpay'
+                    ? 'border-lime-400 bg-lime-400/10 text-white'
+                    : 'border-white/10 bg-zinc-950/40 text-zinc-400 hover:border-white/20'
+                }`}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <span className="font-bold text-sm text-lime-400">Razorpay</span>
+                  {gateway === 'razorpay' && <span className="text-lime-400 font-bold">✓</span>}
+                </div>
+                <p className="text-[11px] text-zinc-400 mt-1">Standard Cards & Wallets</p>
+              </button>
+            </div>
+          </div>
+
           <button
             type="submit"
             disabled={loading}
             className="btn-primary w-full py-4 !rounded-xl text-base hidden lg:block"
           >
-            {loading ? 'Securing your order…' : 'Place Order · Pay Securely'}
+            {loading
+              ? 'Securing your order…'
+              : gateway === 'phonepe'
+              ? 'Pay via PhonePe PG'
+              : 'Pay via Razorpay'}
           </button>
         </form>
 
@@ -325,10 +385,14 @@ export default function CheckoutPage() {
               disabled={loading}
               className="btn-primary w-full py-4 !rounded-xl text-base block lg:hidden mt-6"
             >
-              {loading ? 'Securing your order…' : 'Place Order · Pay Securely'}
+              {loading
+                ? 'Securing your order…'
+                : gateway === 'phonepe'
+                ? 'Pay via PhonePe PG'
+                : 'Pay via Razorpay'}
             </button>
             <p className="text-center text-[11px] text-zinc-500 mt-4">
-              🔒 Powered by Razorpay · You&apos;ll confirm payment next
+              🔒 256-bit Encrypted Checkout · Powered by {gateway === 'phonepe' ? 'PhonePe' : 'Razorpay'}
             </p>
           </div>
         </div>
