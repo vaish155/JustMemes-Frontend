@@ -7,7 +7,9 @@ import {
   VerifyPaymentResponse,
 } from '@/types';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000';
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE ||
+  'https://justmemes-backend-531422631456.asia-south1.run.app';
 
 export const DEMO_PRODUCTS: Product[] = [
   {
