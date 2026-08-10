@@ -16,8 +16,7 @@ export const FAQ: React.FC = () => {
             </span>
           </summary>
           <p className="mt-3 text-zinc-400 text-sm">
-            UPI, cards, netbanking and wallets — all through Razorpay. If you&apos;re seeing TEST
-            MODE, payments are simulated while the store is in dev.
+            UPI, cards, netbanking and wallets — all processed securely through PhonePe PG.
           </p>
         </details>
         <details className="group rounded-xl border border-white/10 bg-white/[0.02] p-5">

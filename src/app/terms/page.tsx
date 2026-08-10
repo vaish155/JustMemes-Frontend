@@ -40,7 +40,7 @@ export default function TermsPage() {
         <section>
           <h2 className="text-xl font-bold text-white mb-3">3. Pricing & Payments</h2>
           <p>
-            Prices are listed in Indian Rupees (INR, ₹). Payments are processed securely via authorized Payment Gateways including PhonePe and Razorpay. By initiating a transaction, you authorize us to charge the specified amount for your order.
+            Prices are listed in Indian Rupees (INR, ₹). Payments are processed securely via authorized Payment Gateways including PhonePe PG. By initiating a transaction, you authorize us to charge the specified amount for your order.
           </p>
         </section>
 

@@ -45,17 +45,21 @@ function OrderSuccessContent() {
           We&apos;ll slide into your DMs when it ships.
         </p>
 
-        <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-4 text-left text-sm space-y-2 font-sans">
-          <div className="flex justify-between">
-            <span className="text-zinc-500">Order ref</span>
-            <span className="font-mono font-bold text-white uppercase">{orderId}</span>
+        <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-4 text-left text-sm space-y-3 font-sans overflow-hidden">
+          <div className="flex items-start justify-between gap-3 min-w-0">
+            <span className="text-zinc-500 shrink-0">Order ref</span>
+            <span className="font-mono font-bold text-white uppercase text-right break-all text-xs sm:text-sm min-w-0" title={orderId}>
+              {orderId}
+            </span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-500">Payment</span>
-            <span className="font-mono text-lime-400 font-bold">{paymentId}</span>
+          <div className="flex items-start justify-between gap-3 min-w-0">
+            <span className="text-zinc-500 shrink-0">Payment</span>
+            <span className="font-mono text-lime-400 font-bold text-right break-all text-xs sm:text-sm min-w-0" title={paymentId}>
+              {paymentId}
+            </span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-500">Status</span>
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-zinc-500 shrink-0">Status</span>
             <span className="text-lime-400 font-bold">PAID</span>
           </div>
         </div>

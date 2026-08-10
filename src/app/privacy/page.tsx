@@ -40,7 +40,7 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-xl font-bold text-white mb-3">3. Payment Security</h2>
           <p>
-            All payment transactions are encrypted and processed by authorized payment partners (such as PhonePe and Razorpay). JustMemes does not store your credit card, UPI PIN, bank details, or CVV on our servers.
+            All payment transactions are encrypted and processed by authorized payment partners (such as PhonePe PG). JustMemes does not store your credit card, UPI PIN, bank details, or CVV on our servers.
           </p>
         </section>
 

@@ -2,9 +2,6 @@ import {
   Product,
   OrderPayload,
   OrderResponse,
-  PaymentCreateResponse,
-  VerifyPaymentPayload,
-  VerifyPaymentResponse,
   PhonePeCreateResponse,
   PhonePeVerifyPayload,
   PhonePeVerifyResponse,
@@ -67,7 +64,7 @@ export const API = {
   async getProducts(): Promise<{ products: Product[]; isDemo: boolean }> {
     try {
       const data = await req<Product[]>('/products');
-      if (Array.isArray(data)) {
+      if (Array.isArray(data) && data.length > 0) {
         return { products: data, isDemo: false };
       }
       return { products: DEMO_PRODUCTS, isDemo: true };
@@ -82,18 +79,6 @@ export const API = {
   },
   placeOrder(payload: OrderPayload): Promise<{ order: OrderResponse }> {
     return req<{ order: OrderResponse }>('/checkout', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    });
-  },
-  createPaymentOrder(payload: { orderId: string; amount: number }): Promise<PaymentCreateResponse> {
-    return req<PaymentCreateResponse>('/payments/create-order', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    });
-  },
-  verifyPayment(payload: VerifyPaymentPayload): Promise<VerifyPaymentResponse> {
-    return req<VerifyPaymentResponse>('/payments/verify', {
       method: 'POST',
       body: JSON.stringify(payload),
     });

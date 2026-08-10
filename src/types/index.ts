@@ -50,32 +50,6 @@ export interface OrderResponse {
   status?: string;
 }
 
-export interface PaymentCreateResponse {
-  razorpay: {
-    id: string;
-    amount: number;
-    currency: string;
-    key?: string;
-    mock?: boolean;
-  };
-}
-
-export interface VerifyPaymentPayload {
-  orderId: string;
-  razorpay_order_id: string;
-  razorpay_payment_id: string;
-  razorpay_signature: string;
-}
-
-export interface VerifyPaymentResponse {
-  success: boolean;
-  order: {
-    id: string;
-    status: string;
-    razorpayPaymentId?: string;
-  };
-}
-
 export interface PhonePeCreateResponse {
   success: boolean;
   mock: boolean;

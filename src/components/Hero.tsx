@@ -10,7 +10,7 @@ export const Hero: React.FC = () => {
           <span className="w-1.5 h-1.5 rounded-full bg-lime-400 animate-pulse" />
           Drop 001 — Live
         </div>
-        <h1 className="font-display font-bold leading-[0.95] tracking-tight text-6xl sm:text-7xl lg:text-8xl animate-rise">
+        <h1 className="font-display font-bold leading-[0.95] tracking-tight text-4xl sm:text-6xl md:text-7xl lg:text-8xl break-words animate-rise">
           College culture,<br />
           <span className="text-lime-400">but make it</span>{' '}
           <span className="outline-text">merch.</span>
