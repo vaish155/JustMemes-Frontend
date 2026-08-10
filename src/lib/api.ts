@@ -87,6 +87,8 @@ export const API = {
     orderId: string;
     amount?: number;
     frontendUrl?: string;
+    vpa?: string;
+    paymentType?: 'PAY_PAGE' | 'UPI_COLLECT';
   }): Promise<PhonePeCreateResponse> {
     return req<PhonePeCreateResponse>('/payments/phonepe/create-order', {
       method: 'POST',

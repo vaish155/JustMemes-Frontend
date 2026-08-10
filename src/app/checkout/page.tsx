@@ -32,6 +32,8 @@ export default function CheckoutPage() {
     hostelName: '',
   });
 
+  const [paymentMode, setPaymentMode] = useState<'PAY_PAGE' | 'UPI_COLLECT'>('PAY_PAGE');
+  const [upiVpa, setUpiVpa] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,6 +56,11 @@ export default function CheckoutPage() {
 
     if (!/^\S+@\S+\.\S+$/.test(form.email)) {
       toast('That email is not emailing.', 'error');
+      return;
+    }
+
+    if (paymentMode === 'UPI_COLLECT' && !upiVpa.trim()) {
+      toast('Enter a valid UPI ID (e.g. success@ybl or username@paytm).', 'error');
       return;
     }
 
@@ -83,6 +90,8 @@ export default function CheckoutPage() {
         orderId: order.id,
         amount: order.total || subtotal,
         frontendUrl: origin,
+        paymentType: paymentMode,
+        vpa: paymentMode === 'UPI_COLLECT' ? upiVpa.trim() : undefined,
       });
 
       if (phonepeRes.redirectUrl) {
@@ -203,16 +212,69 @@ export default function CheckoutPage() {
             </label>
           </div>
 
-          {/* Payment Method Banner */}
+          {/* Payment Method Selector */}
           <div className="pt-2">
-            <span className="field-label block mb-2">Instant Payment</span>
-            <div className="p-4 rounded-2xl border border-white/10 bg-zinc-950/60 text-white flex items-center justify-between">
-              <div>
-                <span className="font-bold text-sm text-lime-400">Secure Online Checkout</span>
-                <p className="text-[11px] text-zinc-400 mt-0.5">UPI, QR Code, Credit/Debit Cards & Netbanking</p>
-              </div>
-              <span className="text-lime-400 font-bold text-lg">🔒</span>
+            <span className="field-label block mb-2">Payment Method</span>
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              <button
+                type="button"
+                onClick={() => setPaymentMode('PAY_PAGE')}
+                className={`p-3 rounded-xl border text-left text-xs transition ${
+                  paymentMode === 'PAY_PAGE'
+                    ? 'border-lime-400 bg-lime-400/10 text-white font-bold'
+                    : 'border-white/10 bg-zinc-950/40 text-zinc-400 hover:border-white/20'
+                }`}
+              >
+                <span className="block font-bold text-sm text-lime-400 mb-0.5">PhonePe Gateway</span>
+                QR, Cards, Netbanking & Apps
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setPaymentMode('UPI_COLLECT')}
+                className={`p-3 rounded-xl border text-left text-xs transition ${
+                  paymentMode === 'UPI_COLLECT'
+                    ? 'border-lime-400 bg-lime-400/10 text-white font-bold'
+                    : 'border-white/10 bg-zinc-950/40 text-zinc-400 hover:border-white/20'
+                }`}
+              >
+                <span className="block font-bold text-sm text-lime-400 mb-0.5">Direct UPI Collect</span>
+                Enter UPI VPA ID
+              </button>
             </div>
+
+            {paymentMode === 'UPI_COLLECT' && (
+              <div className="p-4 rounded-2xl border border-lime-400/30 bg-zinc-950/80 text-white space-y-2 animate-rise">
+                <label className="block">
+                  <span className="field-label text-lime-400">UPI ID / VPA</span>
+                  <input
+                    id="upiVpa"
+                    required
+                    value={upiVpa}
+                    onChange={(e) => setUpiVpa(e.target.value)}
+                    placeholder="e.g. success@ybl or username@paytm"
+                    className="field font-mono !bg-zinc-900 border-lime-400/30"
+                  />
+                </label>
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  <span className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold shrink-0 self-center">
+                    Quick test VPAs:
+                  </span>
+                  {['success@ybl', 'success@upi', '8411987429@ybl', 'username@paytm', 'username@okaxis'].map(
+                    (handle) => (
+                      <button
+                        key={handle}
+                        type="button"
+                        onClick={() => setUpiVpa(handle)}
+                        className="text-[10px] font-mono bg-lime-400/10 hover:bg-lime-400/20 text-lime-300 border border-lime-400/30 px-2 py-1 rounded-md transition"
+                      >
+                        {handle}
+                      </button>
+                    )
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           <button
