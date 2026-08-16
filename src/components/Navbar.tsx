@@ -12,7 +12,7 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <Link href="/" className="font-display font-bold text-2xl tracking-tighter text-white">
-            Insider<span className="text-lime-400">Memes.</span>
+            Meme<span className="text-lime-400">Theory.</span>
           </Link>
           <div className="hidden md:flex space-x-8 text-sm font-medium">
             <Link href="/products" className="text-white hover:text-lime-400 transition">

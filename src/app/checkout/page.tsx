@@ -32,8 +32,6 @@ export default function CheckoutPage() {
     hostelName: '',
   });
 
-  const [paymentMode, setPaymentMode] = useState<'PAY_PAGE' | 'UPI_COLLECT'>('PAY_PAGE');
-  const [upiVpa, setUpiVpa] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,11 +57,6 @@ export default function CheckoutPage() {
       return;
     }
 
-    if (paymentMode === 'UPI_COLLECT' && !upiVpa.trim()) {
-      toast('Enter a valid UPI ID (e.g. success@ybl or username@paytm).', 'error');
-      return;
-    }
-
     setLoading(true);
 
     try {
@@ -84,22 +77,11 @@ export default function CheckoutPage() {
       };
 
       const { order } = await API.placeOrder(payload);
-      const origin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
 
-      const phonepeRes = await API.createPhonePePaymentOrder({
-        orderId: order.id,
-        amount: order.total || subtotal,
-        frontendUrl: origin,
-        paymentType: paymentMode,
-        vpa: paymentMode === 'UPI_COLLECT' ? upiVpa.trim() : undefined,
-      });
-
-      if (phonepeRes.redirectUrl) {
-        window.location.href = phonepeRes.redirectUrl;
-      } else {
-        toast('PhonePe payment initialization failed.', 'error');
-        setLoading(false);
-      }
+      toast('Order placed in test mode — no payment charged.', 'success');
+      router.push(
+        `/order-success?orderId=${encodeURIComponent(order.id)}&paymentId=TEST-MODE`
+      );
     } catch (err: any) {
       toast(err.message || 'Checkout failed. Make sure backend is running.', 'error');
       setLoading(false);
@@ -212,69 +194,16 @@ export default function CheckoutPage() {
             </label>
           </div>
 
-          {/* Payment Method Selector */}
+          {/* Payment Method */}
           <div className="pt-2">
             <span className="field-label block mb-2">Payment Method</span>
-            <div className="grid grid-cols-2 gap-2 mb-3">
-              <button
-                type="button"
-                onClick={() => setPaymentMode('PAY_PAGE')}
-                className={`p-3 rounded-xl border text-left text-xs transition ${
-                  paymentMode === 'PAY_PAGE'
-                    ? 'border-lime-400 bg-lime-400/10 text-white font-bold'
-                    : 'border-white/10 bg-zinc-950/40 text-zinc-400 hover:border-white/20'
-                }`}
-              >
-                <span className="block font-bold text-sm text-lime-400 mb-0.5">PhonePe Gateway</span>
-                QR, Cards, Netbanking & Apps
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setPaymentMode('UPI_COLLECT')}
-                className={`p-3 rounded-xl border text-left text-xs transition ${
-                  paymentMode === 'UPI_COLLECT'
-                    ? 'border-lime-400 bg-lime-400/10 text-white font-bold'
-                    : 'border-white/10 bg-zinc-950/40 text-zinc-400 hover:border-white/20'
-                }`}
-              >
-                <span className="block font-bold text-sm text-lime-400 mb-0.5">Direct UPI Collect</span>
-                Enter UPI VPA ID
-              </button>
+            <div className="p-4 rounded-2xl border border-amber-400/30 bg-amber-400/5 text-white space-y-1.5">
+              <p className="text-sm font-bold text-amber-300">Test Mode — No Payment Required</p>
+              <p className="text-xs text-zinc-400">
+                Payments are not live yet. Razorpay checkout is on the way — for now your order
+                is placed free of charge.
+              </p>
             </div>
-
-            {paymentMode === 'UPI_COLLECT' && (
-              <div className="p-4 rounded-2xl border border-lime-400/30 bg-zinc-950/80 text-white space-y-2 animate-rise">
-                <label className="block">
-                  <span className="field-label text-lime-400">UPI ID / VPA</span>
-                  <input
-                    id="upiVpa"
-                    required
-                    value={upiVpa}
-                    onChange={(e) => setUpiVpa(e.target.value)}
-                    placeholder="e.g. success@ybl or username@paytm"
-                    className="field font-mono !bg-zinc-900 border-lime-400/30"
-                  />
-                </label>
-                <div className="flex flex-wrap gap-1.5 pt-1">
-                  <span className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold shrink-0 self-center">
-                    Quick test VPAs:
-                  </span>
-                  {['success@ybl', 'success@upi', '8411987429@ybl', 'username@paytm', 'username@okaxis'].map(
-                    (handle) => (
-                      <button
-                        key={handle}
-                        type="button"
-                        onClick={() => setUpiVpa(handle)}
-                        className="text-[10px] font-mono bg-lime-400/10 hover:bg-lime-400/20 text-lime-300 border border-lime-400/30 px-2 py-1 rounded-md transition"
-                      >
-                        {handle}
-                      </button>
-                    )
-                  )}
-                </div>
-              </div>
-            )}
           </div>
 
           <button
@@ -282,7 +211,7 @@ export default function CheckoutPage() {
             disabled={loading}
             className="btn-primary w-full py-4 !rounded-xl text-base hidden lg:block"
           >
-            {loading ? 'Securing your order…' : 'Proceed to Pay Securely'}
+            {loading ? 'Placing your order…' : 'Place Order (Test Mode)'}
           </button>
         </form>
 
@@ -331,10 +260,10 @@ export default function CheckoutPage() {
               disabled={loading}
               className="btn-primary w-full py-4 !rounded-xl text-base block lg:hidden mt-6"
             >
-              {loading ? 'Securing your order…' : 'Proceed to Pay Securely'}
+              {loading ? 'Placing your order…' : 'Place Order (Test Mode)'}
             </button>
             <p className="text-center text-[11px] text-zinc-500 mt-4">
-              🔒 256-bit Encrypted Checkout
+              🔒 Test mode — no real payment is processed yet
             </p>
           </div>
         </div>

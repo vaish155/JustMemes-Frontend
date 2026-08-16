@@ -2,8 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Shipping & Delivery Policy | JustMemes',
-  description: 'Shipping timelines and campus hostel delivery details for JustMemes.',
+  title: 'Shipping & Delivery Policy | Meme Theory',
+  description: 'Shipping timelines and campus hostel delivery details for Meme Theory.',
 };
 
 export default function ShippingPolicyPage() {

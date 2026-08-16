@@ -2,8 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Refund & Cancellation Policy | JustMemes',
-  description: 'Refund, return, exchange, and cancellation rules for JustMemes.',
+  title: 'Refund & Cancellation Policy | Meme Theory',
+  description: 'Refund, return, exchange, and cancellation rules for Meme Theory.',
 };
 
 export default function RefundPolicyPage() {
@@ -45,7 +45,7 @@ export default function RefundPolicyPage() {
         <section>
           <h2 className="text-xl font-bold text-white mb-3">3. Refund Processing</h2>
           <p>
-            Once a return is approved, refunds will be initiated to your original payment method (PhonePe, UPI, Netbanking, or Card) within 5 to 7 business days.
+            Once a return is approved, refunds will be initiated to your original payment method (Razorpay, UPI, Netbanking, or Card) within 5 to 7 business days.
           </p>
         </section>
 

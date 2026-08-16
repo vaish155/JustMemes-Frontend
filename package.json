@@ -1,8 +1,8 @@
 {
-  "name": "justmemes-frontend",
+  "name": "meme-theory-frontend",
   "version": "1.0.0",
   "private": true,
-  "description": "InsiderMemes storefront - Next.js App Router",
+  "description": "Meme Theory storefront - Next.js App Router",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

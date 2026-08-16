@@ -2,8 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Contact Us | JustMemes',
-  description: 'Get in touch with the JustMemes team for customer support, orders, and inquiries.',
+  title: 'Contact Us | Meme Theory',
+  description: 'Get in touch with the Meme Theory team for customer support, orders, and inquiries.',
 };
 
 export default function ContactPage() {
@@ -29,7 +29,7 @@ export default function ContactPage() {
           <h2 className="text-xl font-bold text-white">Merchant & Business Details</h2>
           <div className="text-sm text-zinc-400 space-y-3">
             <p>
-              <strong className="text-white">Business Name:</strong> JustMemes / InsiderMemes Apparel
+              <strong className="text-white">Business Name:</strong> Meme Theory Apparel
             </p>
             <p>
               <strong className="text-white">Customer Support Email:</strong>{' '}

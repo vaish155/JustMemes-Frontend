@@ -2,9 +2,6 @@ import {
   Product,
   OrderPayload,
   OrderResponse,
-  PhonePeCreateResponse,
-  PhonePeVerifyPayload,
-  PhonePeVerifyResponse,
 } from '@/types';
 
 const API_BASE =
@@ -79,24 +76,6 @@ export const API = {
   },
   placeOrder(payload: OrderPayload): Promise<{ order: OrderResponse }> {
     return req<{ order: OrderResponse }>('/checkout', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    });
-  },
-  createPhonePePaymentOrder(payload: {
-    orderId: string;
-    amount?: number;
-    frontendUrl?: string;
-    vpa?: string;
-    paymentType?: 'PAY_PAGE' | 'UPI_COLLECT';
-  }): Promise<PhonePeCreateResponse> {
-    return req<PhonePeCreateResponse>('/payments/phonepe/create-order', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    });
-  },
-  verifyPhonePePayment(payload: PhonePeVerifyPayload): Promise<PhonePeVerifyResponse> {
-    return req<PhonePeVerifyResponse>('/payments/phonepe/verify', {
       method: 'POST',
       body: JSON.stringify(payload),
     });

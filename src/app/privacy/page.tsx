@@ -2,8 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Privacy Policy | JustMemes',
-  description: 'How JustMemes collects, protects, and handles your personal information.',
+  title: 'Privacy Policy | Meme Theory',
+  description: 'How Meme Theory collects, protects, and handles your personal information.',
 };
 
 export default function PrivacyPage() {
@@ -26,7 +26,7 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-xl font-bold text-white mb-3">1. Information We Collect</h2>
           <p>
-            When you purchase apparel or interact with JustMemes, we collect personal information necessary for order fulfillment, including your name, email address, phone number, delivery address, hostel name, and room number.
+            When you purchase apparel or interact with Meme Theory, we collect personal information necessary for order fulfillment, including your name, email address, phone number, delivery address, hostel name, and room number.
           </p>
         </section>
 
@@ -40,7 +40,7 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-xl font-bold text-white mb-3">3. Payment Security</h2>
           <p>
-            All payment transactions are encrypted and processed by authorized payment partners (such as PhonePe PG). JustMemes does not store your credit card, UPI PIN, bank details, or CVV on our servers.
+            All payment transactions are encrypted and processed by authorized payment partners (such as Razorpay). Meme Theory does not store your credit card, UPI PIN, bank details, or CVV on our servers.
           </p>
         </section>
 

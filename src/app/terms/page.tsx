@@ -2,8 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Terms & Conditions | JustMemes',
-  description: 'Terms and conditions governing purchases and website usage at JustMemes.',
+  title: 'Terms & Conditions | Meme Theory',
+  description: 'Terms and conditions governing purchases and website usage at Meme Theory.',
 };
 
 export default function TermsPage() {
@@ -26,7 +26,7 @@ export default function TermsPage() {
         <section>
           <h2 className="text-xl font-bold text-white mb-3">1. Introduction</h2>
           <p>
-            Welcome to JustMemes (&quot;InsiderMemes&quot;, &quot;we&quot;, &quot;our&quot;, &quot;us&quot;). By accessing our website, placing an order, or browsing our apparel catalog, you agree to be bound by these Terms and Conditions. Please read them carefully before making any transaction.
+            Welcome to Meme Theory (&quot;we&quot;, &quot;our&quot;, &quot;us&quot;). By accessing our website, placing an order, or browsing our apparel catalog, you agree to be bound by these Terms and Conditions. Please read them carefully before making any transaction.
           </p>
         </section>
 
@@ -40,14 +40,14 @@ export default function TermsPage() {
         <section>
           <h2 className="text-xl font-bold text-white mb-3">3. Pricing & Payments</h2>
           <p>
-            Prices are listed in Indian Rupees (INR, ₹). Payments are processed securely via authorized Payment Gateways including PhonePe PG. By initiating a transaction, you authorize us to charge the specified amount for your order.
+            Prices are listed in Indian Rupees (INR, ₹). Payments are processed securely via Razorpay, our authorized payment gateway. By initiating a transaction, you authorize us to charge the specified amount for your order. During the test phase, orders are placed without a real charge.
           </p>
         </section>
 
         <section>
           <h2 className="text-xl font-bold text-white mb-3">4. Intellectual Property</h2>
           <p>
-            All content on this website, including designs, graphics, logos, text, and artwork, are the exclusive property of JustMemes and are protected under Indian intellectual property laws. Unauthorized reproduction or resale is prohibited.
+            All content on this website, including designs, graphics, logos, text, and artwork, are the exclusive property of Meme Theory and are protected under Indian intellectual property laws. Unauthorized reproduction or resale is prohibited.
           </p>
         </section>
 

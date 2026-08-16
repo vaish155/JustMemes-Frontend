@@ -6,7 +6,7 @@ export const Footer: React.FC = () => {
     <footer className="border-t border-white/5 py-10 px-4 text-center text-zinc-500 text-sm">
       <div className="max-w-4xl mx-auto space-y-4">
         <p className="font-display font-bold text-white text-base">
-          Insider<span className="text-lime-400">Memes.</span>
+          Meme<span className="text-lime-400">Theory.</span>
         </p>
         <p className="text-xs text-zinc-400">
           Made for the hostel, by the hostel. Secure 256-bit instant payments.
@@ -29,7 +29,7 @@ export const Footer: React.FC = () => {
           </Link>
         </div>
         <p className="text-[11px] text-zinc-600 pt-2">
-          © {new Date().getFullYear()} JustMemes. All rights reserved.
+          © {new Date().getFullYear()} Meme Theory. All rights reserved.
         </p>
       </div>
     </footer>

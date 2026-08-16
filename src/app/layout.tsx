@@ -6,8 +6,8 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'InsiderMemes — Drop 001 is Live',
-  description: 'College culture, but make it merch. Unhinged internet culture screen-printed and shipped.',
+  title: 'Meme Theory — Drop 001 is Live',
+  description: 'Meme Theory — college culture, but make it merch. Unhinged internet culture screen-printed and shipped.',
 };
 
 export default function RootLayout({
