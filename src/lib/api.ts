@@ -2,18 +2,23 @@ import {
   Product,
   OrderPayload,
   OrderResponse,
+  RazorpayCreateOrderResponse,
+  RazorpayVerifyPayload,
+  RazorpayVerifyResponse,
 } from '@/types';
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE ||
   'https://justmemes-backend-531422631456.asia-south1.run.app';
 
+export const FLAT_PRICE = 1;
+
 export const DEMO_PRODUCTS: Product[] = [
   {
     id: 'demo-1',
     name: 'The "Three Apples" Tee',
     description: 'Certified unhinged. Oversized fit, bio-washed, zero chill.',
-    price: 899,
+    price: FLAT_PRICE,
     imageUrl:
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeEg4hslTC_Y8BJ1Twku1yqJf7l5VspZsq5fsQG4ba7cMPdCSrFVp6DEqp&s=10',
     stock: 12,
@@ -23,7 +28,7 @@ export const DEMO_PRODUCTS: Product[] = [
     id: 'demo-2',
     name: 'The "Blank Canvas" Tee',
     description: 'For people with no thoughts upstairs. Classic fit.',
-    price: 899,
+    price: FLAT_PRICE,
     imageUrl:
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7Vw02bkwgzPdmBr_ir1F3mAuYoyzZdrvhlVOwYGLNazKAL3bpx-kW1dcH&s=10',
     stock: 3,
@@ -33,7 +38,7 @@ export const DEMO_PRODUCTS: Product[] = [
     id: 'demo-3',
     name: 'The "Low Battery" Tee',
     description: 'Premium 240GSM. Emotionally identical every day.',
-    price: 999,
+    price: FLAT_PRICE,
     imageUrl:
       'https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSfDxRZh-VZL8GE8yHC4_MbCZvG0q7w9jcn2BVQ2rk_a2K3r_LT4iRcG0q7w9jcn2BVQ2rk_a2K3r_T4iRc',
     stock: 0,
@@ -62,7 +67,10 @@ export const API = {
     try {
       const data = await req<Product[]>('/products');
       if (Array.isArray(data) && data.length > 0) {
-        return { products: data, isDemo: false };
+        return {
+          products: data.map((p) => ({ ...p, price: FLAT_PRICE })),
+          isDemo: false,
+        };
       }
       return { products: DEMO_PRODUCTS, isDemo: true };
     } catch {
@@ -76,6 +84,18 @@ export const API = {
   },
   placeOrder(payload: OrderPayload): Promise<{ order: OrderResponse }> {
     return req<{ order: OrderResponse }>('/checkout', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  },
+  createRazorpayOrder(payload: { orderId: string }): Promise<RazorpayCreateOrderResponse> {
+    return req<RazorpayCreateOrderResponse>('/payments/razorpay/create-order', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  },
+  verifyRazorpayPayment(payload: RazorpayVerifyPayload): Promise<RazorpayVerifyResponse> {
+    return req<RazorpayVerifyResponse>('/payments/razorpay/verify', {
       method: 'POST',
       body: JSON.stringify(payload),
     });

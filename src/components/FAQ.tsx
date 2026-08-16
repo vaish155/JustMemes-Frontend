@@ -16,9 +16,7 @@ export const FAQ: React.FC = () => {
             </span>
           </summary>
           <p className="mt-3 text-zinc-400 text-sm">
-            Checkout is currently in test mode, so orders are placed free of charge. We&apos;re
-            going live with UPI, cards, netbanking and wallets soon — all processed securely
-            through Razorpay.
+            UPI, cards, netbanking and wallets — all processed securely through Razorpay.
           </p>
         </details>
         <details className="group rounded-xl border border-white/10 bg-white/[0.02] p-5">

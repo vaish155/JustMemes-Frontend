@@ -50,6 +50,30 @@ export interface OrderResponse {
   status?: string;
 }
 
+export interface RazorpayCreateOrderResponse {
+  success: boolean;
+  orderId: string;
+  amount: number;
+  currency: string;
+  keyId: string;
+  order?: OrderResponse;
+  error?: string;
+}
+
+export interface RazorpayVerifyPayload {
+  orderId: string;
+  razorpayOrderId: string;
+  razorpayPaymentId: string;
+  razorpaySignature: string;
+}
+
+export interface RazorpayVerifyResponse {
+  success: boolean;
+  valid: boolean;
+  paymentStatus: string;
+  order: OrderResponse;
+}
+
 export type ToastType = 'info' | 'success' | 'error';
 
 export interface ToastMessage {

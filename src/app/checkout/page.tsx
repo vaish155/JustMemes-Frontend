@@ -8,6 +8,14 @@ import { useToast } from '@/context/ToastContext';
 import { API } from '@/lib/api';
 import { CheckoutFormData } from '@/types';
 
+declare global {
+  interface Window {
+    Razorpay: new (options: Record<string, unknown>) => {
+      open: () => void;
+    };
+  }
+}
+
 const SIZE_LABEL: Record<string, string> = {
   xs: 'XS',
   s: 'S',
@@ -18,9 +26,22 @@ const SIZE_LABEL: Record<string, string> = {
 
 const inr = (n: number) => '₹' + Number(n || 0).toLocaleString('en-IN');
 
+const loadRazorpayScript = () =>
+  new Promise<void>((resolve, reject) => {
+    if (window.Razorpay) {
+      resolve();
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('Failed to load Razorpay checkout script.'));
+    document.body.appendChild(script);
+  });
+
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, subtotal, isEmpty } = useCart();
+  const { items, subtotal, isEmpty, clear } = useCart();
   const { toast } = useToast();
 
   const [form, setForm] = useState<CheckoutFormData>({
@@ -77,11 +98,53 @@ export default function CheckoutPage() {
       };
 
       const { order } = await API.placeOrder(payload);
+      const rzpRes = await API.createRazorpayOrder({ orderId: order.id });
 
-      toast('Order placed in test mode — no payment charged.', 'success');
-      router.push(
-        `/order-success?orderId=${encodeURIComponent(order.id)}&paymentId=TEST-MODE`
-      );
+      await loadRazorpayScript();
+
+      const options = {
+        key: rzpRes.keyId,
+        amount: rzpRes.amount,
+        currency: rzpRes.currency,
+        name: 'Meme Theory',
+        description: 'Drop 001 — Apparel',
+        order_id: rzpRes.orderId,
+        prefill: {
+          name: form.customerName.trim(),
+          email: form.email.trim(),
+          contact: form.contact.trim(),
+        },
+        theme: { color: '#a3e635' },
+        handler: async (response: any) => {
+          try {
+            const verify = await API.verifyRazorpayPayment({
+              orderId: order.id,
+              razorpayOrderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+            });
+            if (verify.valid) {
+              clear();
+              toast('Payment successful. Order locked in!', 'success');
+              router.push(
+                `/order-success?orderId=${encodeURIComponent(order.id)}&paymentId=${encodeURIComponent(response.razorpay_payment_id)}`
+              );
+            } else {
+              toast('Payment verification failed.', 'error');
+              setLoading(false);
+            }
+          } catch (err: any) {
+            toast(err.message || 'Payment verification failed.', 'error');
+            setLoading(false);
+          }
+        },
+        modal: {
+          ondismiss: () => setLoading(false),
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
     } catch (err: any) {
       toast(err.message || 'Checkout failed. Make sure backend is running.', 'error');
       setLoading(false);
@@ -197,11 +260,10 @@ export default function CheckoutPage() {
           {/* Payment Method */}
           <div className="pt-2">
             <span className="field-label block mb-2">Payment Method</span>
-            <div className="p-4 rounded-2xl border border-amber-400/30 bg-amber-400/5 text-white space-y-1.5">
-              <p className="text-sm font-bold text-amber-300">Test Mode — No Payment Required</p>
+            <div className="p-4 rounded-2xl border border-white/10 bg-zinc-950/60 text-white space-y-1.5">
+              <p className="text-sm font-bold text-white">Razorpay</p>
               <p className="text-xs text-zinc-400">
-                Payments are not live yet. Razorpay checkout is on the way — for now your order
-                is placed free of charge.
+                UPI, Cards, Netbanking & Wallets — processed securely via Razorpay.
               </p>
             </div>
           </div>
@@ -211,7 +273,7 @@ export default function CheckoutPage() {
             disabled={loading}
             className="btn-primary w-full py-4 !rounded-xl text-base hidden lg:block"
           >
-            {loading ? 'Placing your order…' : 'Place Order (Test Mode)'}
+            {loading ? 'Opening secure checkout…' : 'Pay with Razorpay'}
           </button>
         </form>
 
@@ -260,10 +322,10 @@ export default function CheckoutPage() {
               disabled={loading}
               className="btn-primary w-full py-4 !rounded-xl text-base block lg:hidden mt-6"
             >
-              {loading ? 'Placing your order…' : 'Place Order (Test Mode)'}
+              {loading ? 'Opening secure checkout…' : 'Pay with Razorpay'}
             </button>
             <p className="text-center text-[11px] text-zinc-500 mt-4">
-              🔒 Test mode — no real payment is processed yet
+              🔒 256-bit Encrypted Checkout · Razorpay
             </p>
           </div>
         </div>
