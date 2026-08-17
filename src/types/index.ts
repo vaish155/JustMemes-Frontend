@@ -50,6 +50,35 @@ export interface OrderResponse {
   status?: string;
 }
 
+export interface AdminOrderItem {
+  productId: string;
+  productName: string;
+  size: Size;
+  quantity: number;
+  price: number;
+}
+
+export interface AdminOrder {
+  id: string;
+  customerName: string;
+  contact: string;
+  email: string;
+  address: string;
+  roomNumber: string;
+  hostelName: string;
+  items: AdminOrderItem[];
+  subtotal: number;
+  total: number;
+  paymentStatus: string;
+  orderStatus: string;
+  phonepeTxnId: string;
+  paymentGateway: string;
+  phonepeResponseCode: string;
+  razorpayOrderId: string;
+  razorpayPaymentId: string;
+  createdAt: string;
+}
+
 export interface RazorpayCreateOrderResponse {
   success: boolean;
   orderId: string;

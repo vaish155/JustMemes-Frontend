@@ -5,6 +5,7 @@ import {
   RazorpayCreateOrderResponse,
   RazorpayVerifyPayload,
   RazorpayVerifyResponse,
+  AdminOrder,
 } from '@/types';
 
 const API_BASE =
@@ -63,6 +64,10 @@ async function req<T>(path: string, options: RequestInit = {}): Promise<T> {
 
 export const API = {
   base: API_BASE,
+  async getOrders(): Promise<AdminOrder[]> {
+    const data = await req<AdminOrder[]>('/orders');
+    return Array.isArray(data) ? data : [];
+  },
   async getProducts(): Promise<{ products: Product[]; isDemo: boolean }> {
     try {
       const data = await req<Product[]>('/products');
