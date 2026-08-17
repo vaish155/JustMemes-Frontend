@@ -12,6 +12,7 @@ declare global {
   interface Window {
     Razorpay: new (options: Record<string, unknown>) => {
       open: () => void;
+      on: (event: string, handler: (response: any) => void) => void;
     };
   }
 }
@@ -144,6 +145,13 @@ export default function CheckoutPage() {
       };
 
       const rzp = new window.Razorpay(options);
+
+      rzp.on('payment.failed', (response: any) => {
+        const msg = response?.error?.description || 'Payment failed. Please try again.';
+        toast(msg, 'error');
+        setLoading(false);
+      });
+
       rzp.open();
     } catch (err: any) {
       toast(err.message || 'Checkout failed. Make sure backend is running.', 'error');
