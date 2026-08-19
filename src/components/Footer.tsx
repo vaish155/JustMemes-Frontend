@@ -12,6 +12,9 @@ export const Footer: React.FC = () => {
           Made for the hostel, by the hostel. Secure 256-bit instant payments.
         </p>
         <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-medium text-zinc-400 pt-2">
+          <Link href="/trackorder" className="hover:text-lime-400 transition">
+            Track Order
+          </Link>
           <Link href="/terms" className="hover:text-lime-400 transition">
             Terms & Conditions
           </Link>

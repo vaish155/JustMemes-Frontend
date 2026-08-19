@@ -49,7 +49,7 @@ export default function CheckoutPage() {
     customerName: '',
     contact: '',
     email: '',
-    address: '',
+    address: 'IISc',
     roomNumber: '',
     hostelName: '',
   });
@@ -232,12 +232,14 @@ export default function CheckoutPage() {
             <span className="field-label">Address</span>
             <input
               id="address"
-              required
               value={form.address}
-              onChange={handleChange}
-              placeholder="Block C, Road 4, near the canteen"
-              className="field"
+              readOnly
+              disabled
+              className="field !text-zinc-600 !border-white/5 !bg-zinc-900/50 cursor-not-allowed"
             />
+            <span className="text-[11px] text-zinc-600 mt-1.5 block">
+              Delivery is currently campus-only (IISc Bangalore).
+            </span>
           </label>
 
           <div className="grid sm:grid-cols-2 gap-4">

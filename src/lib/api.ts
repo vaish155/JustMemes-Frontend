@@ -113,6 +113,9 @@ export const API = {
     const found = products.find((p) => String(p.id) === String(id));
     return found || null;
   },
+  async getOrderById(id: string): Promise<AdminOrder> {
+    return req<AdminOrder>(`/orders/${encodeURIComponent(id)}`);
+  },
   placeOrder(payload: OrderPayload): Promise<{ order: OrderResponse }> {
     return req<{ order: OrderResponse }>('/checkout', {
       method: 'POST',
