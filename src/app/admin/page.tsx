@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { API } from '@/lib/api';
+import { API, ApiError, clearAdminPwd, getAdminPwd, setAdminPwd } from '@/lib/api';
 import { AdminOrder } from '@/types';
 
 const SIZE_LABEL: Record<string, string> = {
@@ -114,15 +114,124 @@ function OrderSection({ title, count, orders }: { title: string; count: number; 
   );
 }
 
+function LockScreen({
+  authError,
+  busy,
+  onSubmit,
+}: {
+  authError: string;
+  busy: boolean;
+  onSubmit: (pwd: string) => void;
+}) {
+  const [pwd, setPwd] = useState('');
+
+  return (
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-24 min-h-screen">
+      <Link
+        href="/"
+        className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-lime-400 transition mb-6"
+      >
+        ← Back to Store
+      </Link>
+
+      <div className="max-w-md mx-auto mt-16">
+        <div className="bg-zinc-950/60 border border-white/10 rounded-3xl p-8">
+          <p className="overline">Admin</p>
+          <h1 className="font-display font-bold text-3xl text-white mt-1">
+            Locked <span className="text-lime-400">Area</span>
+          </h1>
+          <p className="text-sm text-zinc-500 mt-2">Enter the admin password to view the orders desk.</p>
+
+          <form
+            className="mt-6"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (pwd && !busy) onSubmit(pwd);
+            }}
+          >
+            <label className="field-label block">Password</label>
+            <input
+              type="password"
+              className="field"
+              placeholder="••••••••"
+              value={pwd}
+              onChange={(e) => setPwd(e.target.value)}
+              autoFocus
+            />
+
+            {authError && (
+              <p className="mt-3 text-sm text-rose-400 border border-rose-400/30 bg-rose-400/5 rounded-lg px-3 py-2">
+                {authError}
+              </p>
+            )}
+
+            <button type="submit" className="btn-primary w-full mt-5" disabled={busy || !pwd}>
+              {busy ? 'Checking…' : 'Unlock'}
+            </button>
+          </form>
+        </div>
+      </div>
+    </main>
+  );
+}
+
 export default function AdminPage() {
   const [orders, setOrders] = useState<AdminOrder[] | null>(null);
   const [error, setError] = useState('');
+  const [locked, setLocked] = useState(() => !getAdminPwd());
+  const [authError, setAuthError] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  const loadOrders = useCallback(async () => {
+    try {
+      setOrders(await API.getOrders());
+    } catch (e) {
+      if (e instanceof ApiError && e.status === 401) {
+        clearAdminPwd();
+        setLocked(true);
+        setAuthError('Wrong password. Try again.');
+      } else {
+        setError('Could not reach the backend. Is it running?');
+      }
+    }
+  }, []);
 
   useEffect(() => {
-    API.getOrders()
-      .then(setOrders)
-      .catch(() => setError('Could not reach the backend. Is it running?'));
-  }, []);
+    if (locked) return;
+    setOrders(null);
+    setError('');
+    loadOrders();
+  }, [locked, loadOrders]);
+
+  const handleUnlock = async (pwd: string) => {
+    setBusy(true);
+    setAuthError('');
+    setAdminPwd(pwd);
+    try {
+      setOrders(await API.getOrders());
+      setLocked(false);
+    } catch (e) {
+      clearAdminPwd();
+      if (e instanceof ApiError && e.status === 401) {
+        setAuthError('Wrong password. Try again.');
+      } else {
+        setAuthError('Could not reach the backend. Is it running?');
+      }
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleLock = () => {
+    clearAdminPwd();
+    setLocked(true);
+    setAuthError('');
+    setOrders(null);
+  };
+
+  if (locked) {
+    return <LockScreen authError={authError} busy={busy} onSubmit={handleUnlock} />;
+  }
 
   if (error) {
     return (
@@ -171,17 +280,24 @@ export default function AdminPage() {
             Orders <span className="text-lime-400">Desk</span>
           </h1>
         </div>
-        <button
-          onClick={() => {
-            setOrders(null);
-            API.getOrders()
-              .then(setOrders)
-              .catch(() => setError('Could not reach the backend. Is it running?'));
-          }}
-          className="btn-ghost !py-2.5 !px-6 text-sm"
-        >
-          Refresh
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => {
+              setOrders(null);
+              setError('');
+              loadOrders();
+            }}
+            className="btn-ghost !py-2.5 !px-6 text-sm"
+          >
+            Refresh
+          </button>
+          <button
+            onClick={handleLock}
+            className="btn-ghost !py-2.5 !px-6 text-sm hover:!border-rose-400 hover:!text-rose-300"
+          >
+            Lock
+          </button>
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8 items-start">

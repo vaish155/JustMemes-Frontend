@@ -14,6 +14,29 @@ const API_BASE =
 
 export const FLAT_PRICE = 1;
 
+const ADMIN_PWD_KEY = 'adminPwd';
+
+export class ApiError extends Error {
+  status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
+}
+
+export function getAdminPwd(): string | null {
+  if (typeof window === 'undefined') return null;
+  return window.sessionStorage.getItem(ADMIN_PWD_KEY);
+}
+
+export function setAdminPwd(pwd: string) {
+  window.sessionStorage.setItem(ADMIN_PWD_KEY, pwd);
+}
+
+export function clearAdminPwd() {
+  window.sessionStorage.removeItem(ADMIN_PWD_KEY);
+}
+
 export const DEMO_PRODUCTS: Product[] = [
   {
     id: 'demo-1',
@@ -57,7 +80,7 @@ async function req<T>(path: string, options: RequestInit = {}): Promise<T> {
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new Error(data.error || `Request failed (${res.status})`);
+    throw new ApiError(data.error || `Request failed (${res.status})`, res.status);
   }
   return data as T;
 }
@@ -65,7 +88,10 @@ async function req<T>(path: string, options: RequestInit = {}): Promise<T> {
 export const API = {
   base: API_BASE,
   async getOrders(): Promise<AdminOrder[]> {
-    const data = await req<AdminOrder[]>('/orders');
+    const pwd = getAdminPwd();
+    const data = await req<AdminOrder[]>('/orders', {
+      headers: pwd ? { 'x-admin-pwd': pwd } : {},
+    });
     return Array.isArray(data) ? data : [];
   },
   async getProducts(): Promise<{ products: Product[]; isDemo: boolean }> {
