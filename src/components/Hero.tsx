@@ -30,7 +30,6 @@ export const Hero: React.FC = () => {
         <div className="mt-10 flex flex-wrap justify-center gap-2 animate-rise">
           <span className="chip -rotate-2">100% SUPER-COMBED</span>
           <span className="chip rotate-2 chip-pink">BIO-WASHED</span>
-          <span className="chip -rotate-1 chip-violet">PREMIUM 240GSM</span>
           <span className="chip rotate-1 chip-yellow">XS → XL</span>
         </div>
       </div>
