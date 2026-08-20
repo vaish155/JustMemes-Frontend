@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/react';
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
 import { ToastProvider } from '@/context/ToastContext';
@@ -27,6 +28,7 @@ export default function RootLayout({
         />
       </head>
       <body className="text-zinc-100 antialiased min-h-screen flex flex-col">
+        <Analytics />
         <div className="grain" />
         <ToastProvider>
           <CartProvider>
