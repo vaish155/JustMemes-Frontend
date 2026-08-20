@@ -36,6 +36,10 @@ function stockChip(stock: number) {
 
 export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const cardRef = useRef<HTMLDivElement>(null);
+  const hasDiscount = Boolean(product.comparePrice && product.comparePrice > product.price);
+  const discountPct = hasDiscount
+    ? Math.round(((product.comparePrice! - product.price) / product.comparePrice!) * 100)
+    : 0;
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
@@ -76,20 +80,30 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
             </div>
           )}
         </div>
-        <div className="card-body flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <h3 className="font-display font-bold text-lg leading-snug text-white group-hover:text-lime-400 transition-colors">
-              {product.name}
-            </h3>
-            <p className="text-xs text-zinc-500 mt-0.5">
-              {product.size.map((s) => SIZE_LABEL[s] || String(s).toUpperCase()).join(' · ')}
-            </p>
+          <div className="card-body flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h3 className="font-display font-bold text-lg leading-snug text-white group-hover:text-lime-400 transition-colors">
+                {product.name}
+              </h3>
+              <p className="text-xs text-zinc-500 mt-0.5">
+                {product.size.map((s) => SIZE_LABEL[s] || String(s).toUpperCase()).join(' · ')}
+              </p>
+            </div>
+            <div className="text-right shrink-0">
+              {hasDiscount && (
+                <span className="inline-block text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-rose-500/15 border border-rose-500/40 text-rose-400 mb-1">
+                  {discountPct}% off
+                </span>
+              )}
+              <div className="flex items-center gap-2 justify-end">
+                {hasDiscount && (
+                  <span className="text-sm text-zinc-500 line-through">{inr(product.comparePrice!)}</span>
+                )}
+                <p className="font-display font-bold text-lg text-lime-400">{inr(product.price)}</p>
+              </div>
+              <p className="mt-1">{stockChip(product.stock)}</p>
+            </div>
           </div>
-          <div className="text-right shrink-0">
-            <p className="font-display font-bold text-lg text-lime-400">{inr(product.price)}</p>
-            <p className="mt-1">{stockChip(product.stock)}</p>
-          </div>
-        </div>
       </div>
     </Link>
   );

@@ -33,8 +33,8 @@ export default function ContactPage() {
             </p>
             <p>
               <strong className="text-white">Customer Support Email:</strong>{' '}
-              <a href="mailto:vaishnavs@iisc.ac.in" className="text-lime-400 underline">
-                vaishnavs@iisc.ac.in
+              <a href="mailto:support@memetheory.in" className="text-lime-400 underline">
+                support@memetheory.in
               </a>
             </p>
             <p>

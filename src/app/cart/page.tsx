@@ -107,9 +107,14 @@ export default function CartPage() {
                       >
                         {item.name}
                       </Link>
-                      <p className="text-base font-bold text-lime-400 shrink-0">
-                        {inr(item.price * item.qty)}
-                      </p>
+                      <div className="shrink-0 text-right">
+                        {item.comparePrice && item.comparePrice > item.price && (
+                          <p className="text-xs text-zinc-500 line-through">{inr(item.comparePrice * item.qty)}</p>
+                        )}
+                        <p className="text-base font-bold text-lime-400">
+                          {inr(item.price * item.qty)}
+                        </p>
+                      </div>
                     </div>
 
                     <div className="mt-3 flex flex-wrap items-center gap-3">
@@ -184,6 +189,9 @@ export default function CartPage() {
             >
               Proceed to Checkout →
             </Link>
+            <p className="text-center text-[11px] text-zinc-500 mt-3">
+              Estimated delivery: 7-10 business days
+            </p>
           </div>
         </div>
       )}

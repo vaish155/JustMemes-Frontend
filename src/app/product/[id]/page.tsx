@@ -63,9 +63,13 @@ export default function ProductDetailPage() {
     );
   }
 
-  const isSoldOut = product.stock <= 0;
+    const isSoldOut = product.stock <= 0;
+    const hasDiscount = Boolean(product.comparePrice && product.comparePrice > product.price);
+    const discountPct = hasDiscount
+      ? Math.round(((product.comparePrice! - product.price) / product.comparePrice!) * 100)
+      : 0;
 
-  const handleAddToCart = () => {
+    const handleAddToCart = () => {
     if (isSoldOut) {
       toast('That one is gone, my guy.', 'error');
       return;
@@ -127,9 +131,21 @@ export default function ProductDetailPage() {
             <p className="text-zinc-400 text-sm mb-6 leading-relaxed">
               {product.description || 'The drop piece. If no one laughs, wear it anyway.'}
             </p>
-            <p className="font-display text-4xl font-bold text-lime-400 mb-6">
-              {inr(product.price)}
-            </p>
+            <div className="flex items-center gap-3 mb-6">
+              {hasDiscount && (
+                <span className="inline-block text-xs font-bold tracking-wider uppercase px-2.5 py-1 rounded-full bg-rose-500/15 border border-rose-500/40 text-rose-400">
+                  {discountPct}% off
+                </span>
+              )}
+            </div>
+            <div className="flex items-baseline gap-3 mb-6">
+              <p className="font-display text-4xl font-bold text-lime-400">
+                {inr(product.price)}
+              </p>
+              {hasDiscount && (
+                <p className="text-lg text-zinc-500 line-through">{inr(product.comparePrice!)}</p>
+              )}
+            </div>
 
             <p className="text-xs font-bold tracking-widest uppercase text-zinc-500 mb-2">
               Select Size

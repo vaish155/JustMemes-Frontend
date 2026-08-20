@@ -43,6 +43,7 @@ export const DEMO_PRODUCTS: Product[] = [
     name: 'The "Three Apples" Tee',
     description: 'Certified unhinged. Oversized fit, bio-washed, zero chill.',
     price: FLAT_PRICE,
+    comparePrice: FLAT_PRICE * 3,
     imageUrl:
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeEg4hslTC_Y8BJ1Twku1yqJf7l5VspZsq5fsQG4ba7cMPdCSrFVp6DEqp&s=10',
     stock: 12,
@@ -63,6 +64,7 @@ export const DEMO_PRODUCTS: Product[] = [
     name: 'The "Low Battery" Tee',
     description: 'Premium 240GSM. Emotionally identical every day.',
     price: FLAT_PRICE,
+    comparePrice: FLAT_PRICE * 2,
     imageUrl:
       'https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSfDxRZh-VZL8GE8yHC4_MbCZvG0q7w9jcn2BVQ2rk_a2K3r_LT4iRcG0q7w9jcn2BVQ2rk_a2K3r_T4iRc',
     stock: 0,
@@ -94,12 +96,12 @@ export const API = {
     });
     return Array.isArray(data) ? data : [];
   },
-  async getProducts(): Promise<{ products: Product[]; isDemo: boolean }> {
+    async getProducts(): Promise<{ products: Product[]; isDemo: boolean }> {
     try {
       const data = await req<Product[]>('/products');
       if (Array.isArray(data) && data.length > 0) {
         return {
-          products: data.map((p) => ({ ...p, price: FLAT_PRICE })),
+          products: data,
           isDemo: false,
         };
       }

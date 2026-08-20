@@ -11,13 +11,11 @@ import { Product } from '@/types';
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [isDemo, setIsDemo] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    API.getProducts().then(({ products, isDemo }) => {
+    API.getProducts().then(({ products }) => {
       setProducts(products);
-      setIsDemo(isDemo);
       setLoading(false);
     });
   }, []);
@@ -26,18 +24,6 @@ export default function HomePage() {
     <main className="min-h-screen">
       <Hero />
       <Marquee />
-
-      {/* Backend API warning banner if using demo mode */}
-      {isDemo && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-          <div className="flex items-start gap-3 border border-amber-400/30 bg-amber-400/5 text-amber-200 text-sm rounded-xl px-4 py-3">
-            <span className="mt-0.5">⚠️</span>
-            <div>
-              <strong>Backend not detected.</strong> Showing demo stock. Start the Express server on port 3000 to go live.
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Main Shop Preview */}
       <section id="shop" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-24">

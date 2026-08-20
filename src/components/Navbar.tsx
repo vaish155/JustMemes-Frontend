@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 
 export const Navbar: React.FC = () => {
-  const { count, openDrawer } = useCart();
+  const { count } = useCart();
 
   return (
     <nav className="fixed top-0 inset-x-0 z-40 border-b border-white/5 bg-zinc-950/70 backdrop-blur-xl">

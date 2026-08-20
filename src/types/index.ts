@@ -5,6 +5,7 @@ export interface Product {
   name: string;
   description?: string;
   price: number;
+  comparePrice?: number;
   imageUrl: string;
   stock: number;
   size: Size[];
@@ -14,6 +15,7 @@ export interface CartItem {
   productId: string;
   name: string;
   price: number;
+  comparePrice?: number;
   image: string;
   stock: number;
   size: Size;

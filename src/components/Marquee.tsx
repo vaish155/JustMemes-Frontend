@@ -8,14 +8,12 @@ export const Marquee: React.FC = () => {
     >
       <div className="marquee font-display font-semibold uppercase whitespace-nowrap">
         <span>
-          No refunds on attitude&nbsp;✦&nbsp;Sold out on campus&nbsp;✦&nbsp;Drop 001 is
-          live&nbsp;✦&nbsp;No advance deposit&nbsp;✦&nbsp;You laugh, we print&nbsp;✦&nbsp;Guaranteed
-          funny or your rent back&nbsp;✦&nbsp;&nbsp;
+          Wear the meme, become the meme&nbsp;✦&nbsp;Free campus delivery&nbsp;✦&nbsp;Drop 001 is
+          live&nbsp;✦&nbsp;No restocks&nbsp;✦&nbsp;Campus-only drop&nbsp;✦&nbsp;&nbsp;
         </span>
         <span>
-          No refunds on attitude&nbsp;✦&nbsp;Sold out on campus&nbsp;✦&nbsp;Drop 001 is
-          live&nbsp;✦&nbsp;No advance deposit&nbsp;✦&nbsp;You laugh, we print&nbsp;✦&nbsp;Guaranteed
-          funny or your rent back&nbsp;✦&nbsp;&nbsp;
+          Wear the meme, become the meme&nbsp;✦&nbsp;Free campus delivery&nbsp;✦&nbsp;Drop 001 is
+          live&nbsp;✦&nbsp;No restocks&nbsp;✦&nbsp;Campus-only drop&nbsp;✦&nbsp;&nbsp;
         </span>
       </div>
     </div>

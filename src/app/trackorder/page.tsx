@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useToast } from '@/context/ToastContext';
 import { API, ApiError } from '@/lib/api';
 import { AdminOrder } from '@/types';
@@ -15,6 +16,9 @@ const SIZE_LABEL: Record<string, string> = {
 };
 
 const inr = (n: number) => '₹' + Number(n || 0).toLocaleString('en-IN');
+
+const DELIVERY_DAYS_MIN = 7;
+const DELIVERY_DAYS_MAX = 10;
 
 const formatDate = (date: string) => {
   const d = new Date(date);
@@ -46,20 +50,15 @@ function StatusChip({ paymentStatus }: { paymentStatus: string }) {
   );
 }
 
-export default function TrackOrderPage() {
+function TrackOrderContent() {
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const [ref, setRef] = useState('');
   const [order, setOrder] = useState<AdminOrder | null>(null);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
 
-  const handleTrack = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const id = ref.trim();
-    if (!id) {
-      toast('Enter your order ref first.', 'error');
-      return;
-    }
+  const doSearch = async (id: string) => {
     setLoading(true);
     setSearched(false);
     setOrder(null);
@@ -71,12 +70,31 @@ export default function TrackOrderPage() {
       const msg =
         err instanceof ApiError && err.status === 404
           ? 'No order found with that ref.'
-          : 'Could not reach the backend. Try again later.';
+          : 'Something went wrong. Try again later.';
       toast(msg, 'error');
     } finally {
       setLoading(false);
       setSearched(true);
     }
+  };
+
+  useEffect(() => {
+    const urlRef = searchParams.get('ref');
+    if (urlRef) {
+      setRef(urlRef);
+      doSearch(urlRef);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleTrack = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const id = ref.trim();
+    if (!id) {
+      toast('Enter your order ref first.', 'error');
+      return;
+    }
+    doSearch(id);
   };
 
   return (
@@ -182,9 +200,37 @@ export default function TrackOrderPage() {
                 </div>
               ))}
             </div>
+
+            {order.paymentStatus === 'paid' && (
+              <div className="border-t border-white/10 pt-4">
+                <p className="text-xs text-zinc-500 uppercase tracking-widest font-bold mb-2">Estimated Delivery</p>
+                <p className="text-sm text-zinc-300">
+                  {new Date(new Date(order.createdAt).getTime() + DELIVERY_DAYS_MIN * 86400000).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                  {' '}&mdash;{' '}
+                  {new Date(new Date(order.createdAt).getTime() + DELIVERY_DAYS_MAX * 86400000).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                </p>
+                <p className="text-[11px] text-zinc-600 mt-1">
+                  Ordered on {formatDate(order.createdAt)}. Delivery within {DELIVERY_DAYS_MIN}&ndash;{DELIVERY_DAYS_MAX} business days.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       )}
     </main>
+  );
+}
+
+export default function TrackOrderPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen grid place-items-center text-zinc-400 font-display">
+          Loading...
+        </div>
+      }
+    >
+      <TrackOrderContent />
+    </Suspense>
   );
 }

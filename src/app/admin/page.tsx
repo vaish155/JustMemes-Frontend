@@ -191,7 +191,7 @@ export default function AdminPage() {
         setLocked(true);
         setAuthError('Wrong password. Try again.');
       } else {
-        setError('Could not reach the backend. Is it running?');
+        setError('Could not reach the server. Please try again later.');
       }
     }
   }, []);
@@ -215,7 +215,7 @@ export default function AdminPage() {
       if (e instanceof ApiError && e.status === 401) {
         setAuthError('Wrong password. Try again.');
       } else {
-        setAuthError('Could not reach the backend. Is it running?');
+        setAuthError('Could not reach the server. Please try again later.');
       }
     } finally {
       setBusy(false);
@@ -240,10 +240,7 @@ export default function AdminPage() {
           <span className="mt-0.5">⚠️</span>
           <div>
             <strong>{error}</strong>
-            <p className="mt-1">
-              The backend <code className="text-lime-300">/orders</code> endpoint is at{' '}
-              <code className="text-lime-300">{API.base}</code>.
-            </p>
+            <p className="mt-1">Please try again in a moment.</p>
           </div>
         </div>
       </main>

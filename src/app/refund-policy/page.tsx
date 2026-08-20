@@ -26,7 +26,7 @@ export default function RefundPolicyPage() {
         <section>
           <h2 className="text-xl font-bold text-white mb-3">1. Order Cancellations</h2>
           <p>
-            You may cancel your order within 2 hours of placing it, provided it has not already been dispatched for delivery. To cancel an order, email us at support@justmemes.in or reach out via our contact options.
+            You may cancel your order within 2 hours of placing it, provided it has not already been dispatched for delivery. To cancel an order, email us at support@memetheory.in or reach out via our contact options.
           </p>
         </section>
 
@@ -59,7 +59,7 @@ export default function RefundPolicyPage() {
         <section>
           <h2 className="text-xl font-bold text-white mb-3">5. Contact Support</h2>
           <p>
-            For any return or refund requests, please contact us at support@justmemes.in or visit our{' '}
+            For any return or refund requests, please contact us at support@memetheory.in or visit our{' '}
             <Link href="/contact" className="text-lime-400 underline">
               Contact Page
             </Link>

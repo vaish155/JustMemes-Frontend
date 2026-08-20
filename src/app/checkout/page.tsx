@@ -154,7 +154,7 @@ export default function CheckoutPage() {
 
       rzp.open();
     } catch (err: any) {
-      toast(err.message || 'Checkout failed. Make sure backend is running.', 'error');
+      toast(err.message || 'Checkout failed. Please try again.', 'error');
       setLoading(false);
     }
   };

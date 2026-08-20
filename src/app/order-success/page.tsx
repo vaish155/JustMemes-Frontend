@@ -42,7 +42,7 @@ function OrderSuccessContent() {
         <p className="text-zinc-400 text-sm mt-2 leading-relaxed">
           Your drip is officially on the way.
           <br />
-          We&apos;ll slide into your DMs when it ships.
+          Estimated delivery: 7-10 business days.
         </p>
 
         <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-4 text-left text-sm space-y-3 font-sans overflow-hidden">
@@ -67,6 +67,14 @@ function OrderSuccessContent() {
         <Link href="/" className="btn-primary w-full mt-6 !rounded-xl text-center block">
           Back to the Drop
         </Link>
+        {orderId && orderId !== '—' && (
+          <Link
+            href={`/trackorder?ref=${encodeURIComponent(orderId)}`}
+            className="btn-ghost w-full mt-3 !rounded-xl text-center block text-sm"
+          >
+            Track this Order
+          </Link>
+        )}
       </div>
     </main>
   );

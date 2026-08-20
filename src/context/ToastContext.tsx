@@ -28,7 +28,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       {children}
       <div
         id="toasts"
-        className="fixed bottom-6 inset-x-0 z-[110] flex flex-col items-center gap-2 px-4 pointer-events-none"
+        className="fixed bottom-6 right-4 sm:right-6 z-[110] flex flex-col items-end gap-2 pointer-events-none"
       >
         {toasts.map((t) => (
           <div key={t.id} className={`toast ${t.type}`}>
