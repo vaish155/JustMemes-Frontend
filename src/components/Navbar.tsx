@@ -21,7 +21,7 @@ export const Navbar: React.FC = () => {
             <Link href="/trackorder" className="text-zinc-400 hover:text-white transition">
               Track Order
             </Link>
-            <Link href="/#the-drop" className="text-zinc-400 hover:text-white transition">
+            <Link href="/products" className="text-zinc-400 hover:text-white transition">
               The Drop
             </Link>
             <Link href="/#faq" className="text-zinc-400 hover:text-white transition">
