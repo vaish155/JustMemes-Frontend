@@ -48,6 +48,7 @@ export const DEMO_PRODUCTS: Product[] = [
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeEg4hslTC_Y8BJ1Twku1yqJf7l5VspZsq5fsQG4ba7cMPdCSrFVp6DEqp&s=10',
     stock: 12,
     size: ['s', 'm', 'l', 'xl'],
+    colors: ['black', 'white', 'olive'],
   },
   {
     id: 'demo-2',
@@ -58,6 +59,7 @@ export const DEMO_PRODUCTS: Product[] = [
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7Vw02bkwgzPdmBr_ir1F3mAuYoyzZdrvhlVOwYGLNazKAL3bpx-kW1dcH&s=10',
     stock: 3,
     size: ['s', 'm', 'l', 'xl'],
+    colors: ['black', 'beige'],
   },
   {
     id: 'demo-3',
@@ -69,6 +71,7 @@ export const DEMO_PRODUCTS: Product[] = [
       'https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSfDxRZh-VZL8GE8yHC4_MbCZvG0q7w9jcn2BVQ2rk_a2K3r_LT4iRcG0q7w9jcn2BVQ2rk_a2K3r_T4iRc',
     stock: 0,
     size: ['xs', 's', 'm', 'l', 'xl'],
+    colors: ['black', 'navy', 'maroon'],
   },
 ];
 

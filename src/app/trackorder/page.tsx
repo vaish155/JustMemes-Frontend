@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useToast } from '@/context/ToastContext';
 import { API, ApiError } from '@/lib/api';
-import { AdminOrder } from '@/types';
+import { AdminOrder, colorLabel } from '@/types';
 
 const SIZE_LABEL: Record<string, string> = {
   xs: 'XS',
@@ -191,7 +191,8 @@ function TrackOrderContent() {
                   <span className="text-zinc-300 truncate">
                     {item.quantity}× {item.productName}{' '}
                     <span className="text-zinc-600">
-                      ({SIZE_LABEL[item.size] || String(item.size).toUpperCase()})
+                      ({SIZE_LABEL[item.size] || String(item.size).toUpperCase()} ·{' '}
+                      {colorLabel(item.color || 'black')})
                     </span>
                   </span>
                   <span className="font-semibold text-zinc-200 shrink-0">

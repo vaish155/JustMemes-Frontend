@@ -2,7 +2,7 @@
 
 import React, { useRef } from 'react';
 import Link from 'next/link';
-import { Product } from '@/types';
+import { COLOR_HEX, Product, colorLabel } from '@/types';
 
 const SIZE_LABEL: Record<string, string> = {
   xs: 'XS',
@@ -40,6 +40,7 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const discountPct = hasDiscount
     ? Math.round(((product.comparePrice! - product.price) / product.comparePrice!) * 100)
     : 0;
+  const colors = Array.isArray(product.colors) && product.colors.length ? product.colors : [];
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
@@ -88,6 +89,21 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
               <p className="text-xs text-zinc-500 mt-0.5">
                 {product.size.map((s) => SIZE_LABEL[s] || String(s).toUpperCase()).join(' · ')}
               </p>
+              {colors.length > 0 && (
+                <div className="flex items-center gap-1.5 mt-1.5">
+                  {colors.slice(0, 5).map((c) => (
+                    <span
+                      key={c}
+                      title={colorLabel(c)}
+                      className="w-3 h-3 rounded-full border border-white/30 inline-block"
+                      style={{ backgroundColor: COLOR_HEX[c] || '#52525b' }}
+                    />
+                  ))}
+                  {colors.length > 5 && (
+                    <span className="text-[10px] text-zinc-500">+{colors.length - 5}</span>
+                  )}
+                </div>
+              )}
             </div>
             <div className="text-right shrink-0">
               {hasDiscount && (

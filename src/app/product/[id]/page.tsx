@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { API } from '@/lib/api';
-import { Product, Size } from '@/types';
+import { Color, Product, Size, COLOR_HEX, colorLabel } from '@/types';
 import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
 
@@ -26,8 +26,10 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState<Size | ''>('');
+  const [selectedColor, setSelectedColor] = useState<Color | ''>('');
   const [qty, setQty] = useState(1);
   const [sizeHint, setSizeHint] = useState('');
+  const [colorHint, setColorHint] = useState('');
 
   const { add } = useCart();
   const { toast } = useToast();
@@ -38,6 +40,9 @@ export default function ProductDetailPage() {
       setProduct(p);
       if (p && p.size && p.size.length === 1) {
         setSelectedSize(p.size[0]);
+      }
+      if (p && Array.isArray(p.colors) && p.colors.length === 1) {
+        setSelectedColor(p.colors[0]);
       }
       setLoading(false);
     });
@@ -68,6 +73,8 @@ export default function ProductDetailPage() {
     const discountPct = hasDiscount
       ? Math.round(((product.comparePrice! - product.price) / product.comparePrice!) * 100)
       : 0;
+    const availableColors =
+      Array.isArray(product.colors) && product.colors.length ? product.colors : ['black'];
 
     const handleAddToCart = () => {
     if (isSoldOut) {
@@ -78,9 +85,15 @@ export default function ProductDetailPage() {
       setSizeHint('You have to pick a size, obviously.');
       return;
     }
-    add(product, selectedSize, qty);
+    if (!selectedColor) {
+      setColorHint('Pick a color — do not be shy.');
+      return;
+    }
+    add(product, selectedSize, selectedColor, qty);
     toast(
-      `${product.name} (${SIZE_LABEL[selectedSize] || selectedSize.toUpperCase()}) added to cart`,
+      `${product.name} (${SIZE_LABEL[selectedSize] || selectedSize.toUpperCase()} · ${colorLabel(
+        selectedColor
+      )}) added to cart`,
       'success'
     );
   };
@@ -167,6 +180,31 @@ export default function ProductDetailPage() {
             </div>
             {sizeHint && <p className="text-[11px] text-amber-300 font-medium mb-4">{sizeHint}</p>}
 
+            <p className="text-xs font-bold tracking-widest uppercase text-zinc-500 mb-2">
+              Select Color {selectedColor && <span className="text-zinc-400 normal-case tracking-normal">— {colorLabel(selectedColor)}</span>}
+            </p>
+            <div className="flex gap-2.5 mb-2 flex-wrap">
+              {availableColors.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  aria-label={colorLabel(c)}
+                  title={colorLabel(c)}
+                  onClick={() => {
+                    setSelectedColor(c);
+                    setColorHint('');
+                  }}
+                  className={`w-9 h-9 rounded-full border-2 transition-transform active:scale-90 ${
+                    selectedColor === c
+                      ? 'border-lime-400 ring-2 ring-lime-400/40 scale-110'
+                      : 'border-white/20 hover:border-white/50'
+                  }`}
+                  style={{ backgroundColor: COLOR_HEX[c] || '#52525b' }}
+                />
+              ))}
+            </div>
+            {colorHint && <p className="text-[11px] text-amber-300 font-medium mb-4">{colorHint}</p>}
+
             <div className="mt-4 flex items-center justify-between rounded-xl border border-white/10 bg-zinc-950/50 p-2 mb-6">
               <span className="pl-3 text-sm font-semibold text-white">Quantity</span>
               <div className="flex items-center gap-3">
@@ -197,6 +235,8 @@ export default function ProductDetailPage() {
                 ? 'Sold Out — Gone Forever'
                 : !selectedSize
                 ? 'Pick a size first'
+                : !selectedColor && availableColors.length > 1
+                ? 'Pick a color first'
                 : `Add to Cart — ${inr(product.price * qty)}`}
             </button>
             <p className="text-center text-xs text-zinc-500 mt-4">

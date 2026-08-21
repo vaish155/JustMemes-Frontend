@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
 import { API } from '@/lib/api';
-import { Product, Size } from '@/types';
+import { Color, Product, Size, COLOR_HEX, colorLabel } from '@/types';
 
 const SIZE_LABEL: Record<string, string> = {
   xs: 'XS',
@@ -20,7 +20,7 @@ const inr = (n: number) => '₹' + Number(n || 0).toLocaleString('en-IN');
 
 export default function CartPage() {
   const router = useRouter();
-  const { items, subtotal, isEmpty, setQty, changeSize, remove, clear } = useCart();
+  const { items, subtotal, isEmpty, setQty, changeVariant, remove, clear } = useCart();
   const { toast } = useToast();
 
   const [productsMap, setProductsMap] = useState<Record<string, Product>>({});
@@ -85,10 +85,14 @@ export default function CartPage() {
                 product && product.size && product.size.length
                   ? product.size
                   : [item.size];
+              const availableColors =
+                product && Array.isArray(product.colors) && product.colors.length
+                  ? product.colors
+                  : [item.color || 'black'];
 
               return (
                 <div
-                  key={`${item.productId}-${item.size}`}
+                  key={`${item.productId}-${item.size}-${item.color}`}
                   className="bg-zinc-900/70 border border-white/10 rounded-2xl p-4 flex gap-4 items-center"
                 >
                   <div className="w-20 h-24 rounded-xl overflow-hidden bg-zinc-800 shrink-0">
@@ -123,7 +127,13 @@ export default function CartPage() {
                         <select
                           value={item.size}
                           onChange={(e) =>
-                            changeSize(item.productId, item.size, e.target.value as Size)
+                            changeVariant(
+                              item.productId,
+                              item.size,
+                              item.color,
+                              e.target.value as Size,
+                              item.color
+                            )
                           }
                           className="bg-zinc-950 border border-white/15 text-xs text-white rounded-lg px-2 py-1 outline-none focus:border-lime-400"
                         >
@@ -135,9 +145,36 @@ export default function CartPage() {
                         </select>
                       </div>
 
+                      <div className="flex items-center gap-1">
+                        <span className="text-xs text-zinc-500">Color:</span>
+                        <select
+                          value={item.color || 'black'}
+                          onChange={(e) =>
+                            changeVariant(
+                              item.productId,
+                              item.size,
+                              item.color,
+                              item.size,
+                              e.target.value as Color
+                            )
+                          }
+                          className="bg-zinc-950 border border-white/15 text-xs text-white rounded-lg px-2 py-1 outline-none focus:border-lime-400"
+                        >
+                          {availableColors.map((c) => (
+                            <option key={c} value={c}>
+                              {colorLabel(c)}
+                            </option>
+                          ))}
+                        </select>
+                        <span
+                          className="w-3.5 h-3.5 rounded-full border border-white/30 shrink-0"
+                          style={{ backgroundColor: COLOR_HEX[item.color] || '#52525b' }}
+                        />
+                      </div>
+
                       <div className="flex items-center gap-2 ml-auto">
                         <button
-                          onClick={() => setQty(item.productId, item.size, item.qty - 1)}
+                          onClick={() => setQty(item.productId, item.size, item.color, item.qty - 1)}
                           className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold transition active:scale-90"
                         >
                           −
@@ -146,13 +183,13 @@ export default function CartPage() {
                           {item.qty}
                         </span>
                         <button
-                          onClick={() => setQty(item.productId, item.size, item.qty + 1)}
+                          onClick={() => setQty(item.productId, item.size, item.color, item.qty + 1)}
                           className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold transition active:scale-90"
                         >
                           +
                         </button>
                         <button
-                          onClick={() => remove(item.productId, item.size)}
+                          onClick={() => remove(item.productId, item.size, item.color)}
                           className="w-8 h-8 rounded-lg bg-rose-500/10 hover:bg-rose-500/25 text-rose-400 font-bold transition active:scale-90 ml-2"
                         >
                           ✕

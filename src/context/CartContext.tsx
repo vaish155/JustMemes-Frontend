@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { CartItem, Product, Size } from '@/types';
+import { CartItem, Color, Product, Size } from '@/types';
 
 const CART_KEY = 'jm_cart_v1';
 
@@ -10,10 +10,16 @@ interface CartContextValue {
   count: number;
   subtotal: number;
   isEmpty: boolean;
-  add: (product: Product, size: Size, qty: number) => void;
-  setQty: (productId: string, size: Size, qty: number) => void;
-  changeSize: (productId: string, fromSize: Size, toSize: Size) => void;
-  remove: (productId: string, size: Size) => void;
+  add: (product: Product, size: Size, color: Color, qty: number) => void;
+  setQty: (productId: string, size: Size, color: Color, qty: number) => void;
+  changeVariant: (
+    productId: string,
+    fromSize: Size,
+    fromColor: Color,
+    toSize: Size,
+    toColor: Color
+  ) => void;
+  remove: (productId: string, size: Size, color: Color) => void;
   clear: () => void;
   isDrawerOpen: boolean;
   openDrawer: () => void;
@@ -33,7 +39,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const raw = localStorage.getItem(CART_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) setItems(parsed);
+        if (Array.isArray(parsed)) {
+          setItems(
+            parsed
+              .filter((i) => i && i.productId)
+              .map((i) => ({ ...i, color: i.color || 'black' }))
+          );
+        }
       }
     } catch {
       // ignore JSON error
@@ -52,15 +64,17 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const subtotal = items.reduce((n, i) => n + i.price * i.qty, 0);
   const isEmpty = items.length === 0;
 
-  const find = (productId: string, size: Size) =>
-    items.find((i) => i.productId === productId && i.size === size);
+  const find = (productId: string, size: Size, color: Color) =>
+    items.find((i) => i.productId === productId && i.size === size && i.color === color);
 
-  const add = useCallback((product: Product, size: Size, qty: number) => {
+  const add = useCallback((product: Product, size: Size, color: Color, qty: number) => {
     setItems((prev) => {
-      const existing = prev.find((i) => i.productId === product.id && i.size === size);
+      const existing = prev.find(
+        (i) => i.productId === product.id && i.size === size && i.color === color
+      );
       if (existing) {
         return prev.map((i) =>
-          i.productId === product.id && i.size === size
+          i.productId === product.id && i.size === size && i.color === color
             ? { ...i, qty: Math.min(i.qty + qty, 99) }
             : i
         );
@@ -75,6 +89,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             image: product.imageUrl,
             stock: product.stock,
             size,
+            color,
             qty,
           },
         ];
@@ -82,19 +97,21 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   }, []);
 
-  const remove = useCallback((productId: string, size: Size) => {
-    setItems((prev) => prev.filter((i) => !(i.productId === productId && i.size === size)));
+  const remove = useCallback((productId: string, size: Size, color: Color) => {
+    setItems((prev) =>
+      prev.filter((i) => !(i.productId === productId && i.size === size && i.color === color))
+    );
   }, []);
 
   const setQty = useCallback(
-    (productId: string, size: Size, qty: number) => {
+    (productId: string, size: Size, color: Color, qty: number) => {
       if (qty <= 0) {
-        remove(productId, size);
+        remove(productId, size, color);
         return;
       }
       setItems((prev) =>
         prev.map((i) =>
-          i.productId === productId && i.size === size
+          i.productId === productId && i.size === size && i.color === color
             ? { ...i, qty: Math.min(qty, 99) }
             : i
         )
@@ -103,26 +120,37 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     [remove]
   );
 
-  const changeSize = useCallback((productId: string, fromSize: Size, toSize: Size) => {
-    setItems((prev) => {
-      const item = prev.find((i) => i.productId === productId && i.size === fromSize);
-      if (!item) return prev;
-      const existing = prev.find((i) => i.productId === productId && i.size === toSize);
-      if (existing) {
-        return prev
-          .filter((i) => !(i.productId === productId && i.size === fromSize))
-          .map((i) =>
-            i.productId === productId && i.size === toSize
-              ? { ...i, qty: Math.min(i.qty + item.qty, 99) }
+  const changeVariant = useCallback(
+    (productId: string, fromSize: Size, fromColor: Color, toSize: Size, toColor: Color) => {
+      setItems((prev) => {
+        const item = prev.find(
+          (i) => i.productId === productId && i.size === fromSize && i.color === fromColor
+        );
+        if (!item) return prev;
+        const existing = prev.find(
+          (i) => i.productId === productId && i.size === toSize && i.color === toColor
+        );
+        if (existing) {
+          return prev
+            .filter(
+              (i) => !(i.productId === productId && i.size === fromSize && i.color === fromColor)
+            )
+            .map((i) =>
+              i.productId === productId && i.size === toSize && i.color === toColor
+                ? { ...i, qty: Math.min(i.qty + item.qty, 99) }
+                : i
+            );
+        } else {
+          return prev.map((i) =>
+            i.productId === productId && i.size === fromSize && i.color === fromColor
+              ? { ...i, size: toSize, color: toColor }
               : i
           );
-      } else {
-        return prev.map((i) =>
-          i.productId === productId && i.size === fromSize ? { ...i, size: toSize } : i
-        );
-      }
-    });
-  }, []);
+        }
+      });
+    },
+    []
+  );
 
   const clear = useCallback(() => {
     setItems([]);
@@ -141,7 +169,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isEmpty,
         add,
         setQty,
-        changeSize,
+        changeVariant,
         remove,
         clear,
         isDrawerOpen,

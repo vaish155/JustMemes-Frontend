@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
 import { API } from '@/lib/api';
-import { CheckoutFormData } from '@/types';
+import { CheckoutFormData, colorLabel } from '@/types';
 
 declare global {
   interface Window {
@@ -93,6 +93,7 @@ export default function CheckoutPage() {
           productId: i.productId,
           productName: i.name,
           size: i.size,
+          color: i.color || 'black',
           quantity: i.qty,
           price: i.price,
         })),
@@ -294,13 +295,14 @@ export default function CheckoutPage() {
             <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
               {items.map((item) => (
                 <div
-                  key={`${item.productId}-${item.size}`}
+                  key={`${item.productId}-${item.size}-${item.color}`}
                   className="flex justify-between gap-3 text-sm"
                 >
                   <span className="text-zinc-400 truncate">
                     {item.qty}× {item.name}{' '}
                     <span className="text-zinc-600">
-                      ({SIZE_LABEL[item.size] || item.size.toUpperCase()})
+                      ({SIZE_LABEL[item.size] || item.size.toUpperCase()} ·{' '}
+                      {colorLabel(item.color || 'black')})
                     </span>
                   </span>
                   <span className="font-bold text-white shrink-0">

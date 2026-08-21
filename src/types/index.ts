@@ -1,5 +1,30 @@
 export type Size = 'xs' | 's' | 'm' | 'l' | 'xl';
 
+export type Color = string;
+
+export const COLOR_LABEL: Record<string, string> = {
+  black: 'Black',
+  white: 'White',
+  grey: 'Grey',
+  navy: 'Navy',
+  olive: 'Olive',
+  maroon: 'Maroon',
+  beige: 'Beige',
+};
+
+export const COLOR_HEX: Record<string, string> = {
+  black: '#18181b',
+  white: '#fafafa',
+  grey: '#a1a1aa',
+  navy: '#1e3a5f',
+  olive: '#6b7250',
+  maroon: '#7f1d1d',
+  beige: '#d6c9b4',
+};
+
+export const colorLabel = (c: string) =>
+  COLOR_LABEL[c] || (c ? c.charAt(0).toUpperCase() + c.slice(1) : '');
+
 export interface Product {
   id: string;
   name: string;
@@ -9,6 +34,7 @@ export interface Product {
   imageUrl: string;
   stock: number;
   size: Size[];
+  colors: Color[];
 }
 
 export interface CartItem {
@@ -19,6 +45,7 @@ export interface CartItem {
   image: string;
   stock: number;
   size: Size;
+  color: Color;
   qty: number;
 }
 
@@ -35,6 +62,7 @@ export interface OrderPayloadItem {
   productId: string;
   productName: string;
   size: Size;
+  color: Color;
   quantity: number;
   price: number;
 }
@@ -56,6 +84,7 @@ export interface AdminOrderItem {
   productId: string;
   productName: string;
   size: Size;
+  color: Color;
   quantity: number;
   price: number;
 }

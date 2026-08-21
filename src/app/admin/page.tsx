@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { API, ApiError, clearAdminPwd, getAdminPwd, setAdminPwd } from '@/lib/api';
-import { AdminOrder } from '@/types';
+import { AdminOrder, colorLabel } from '@/types';
 
 const SIZE_LABEL: Record<string, string> = {
   xs: 'XS',
@@ -83,7 +83,8 @@ function OrderCard({ order }: { order: AdminOrder }) {
             <span className="text-zinc-300 truncate">
               {item.quantity}× {item.productName}{' '}
               <span className="text-zinc-600">
-                ({SIZE_LABEL[item.size] || String(item.size).toUpperCase()})
+                ({SIZE_LABEL[item.size] || String(item.size).toUpperCase()} ·{' '}
+                {colorLabel(item.color || 'black')})
               </span>
             </span>
             <span className="font-semibold text-zinc-200 shrink-0">
