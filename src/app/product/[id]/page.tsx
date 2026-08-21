@@ -30,6 +30,7 @@ export default function ProductDetailPage() {
   const [qty, setQty] = useState(1);
   const [sizeHint, setSizeHint] = useState('');
   const [colorHint, setColorHint] = useState('');
+  const [imageIdx, setImageIdx] = useState(0);
 
   const { add } = useCart();
   const { toast } = useToast();
@@ -38,6 +39,7 @@ export default function ProductDetailPage() {
     if (!id) return;
     API.getProductById(id).then((p) => {
       setProduct(p);
+      setImageIdx(0);
       if (p && p.size && p.size.length === 1) {
         setSelectedSize(p.size[0]);
       }
@@ -75,6 +77,13 @@ export default function ProductDetailPage() {
       : 0;
     const availableColors =
       Array.isArray(product.colors) && product.colors.length ? product.colors : ['black'];
+    const gallery =
+      Array.isArray(product.images) && product.images.filter(Boolean).length
+        ? product.images.filter(Boolean)
+        : [product.imageUrl];
+    const safeImageIdx = Math.min(imageIdx, gallery.length - 1);
+    const prevImage = () => setImageIdx((safeImageIdx - 1 + gallery.length) % gallery.length);
+    const nextImage = () => setImageIdx((safeImageIdx + 1) % gallery.length);
 
     const handleAddToCart = () => {
     if (isSoldOut) {
@@ -108,15 +117,73 @@ export default function ProductDetailPage() {
       </Link>
 
       <div className="bg-zinc-900 border border-white/10 rounded-3xl overflow-hidden shadow-2xl grid md:grid-cols-2">
-        {/* Left: Image Container */}
+        {/* Left: Image Carousel */}
         <div className="bg-zinc-800/40 relative min-h-[380px] md:min-h-[480px]">
           <div className="modal-glow" />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={product.imageUrl}
-            alt={product.name}
+            src={gallery[safeImageIdx]}
+            alt={`${product.name} — image ${safeImageIdx + 1} of ${gallery.length}`}
             className="absolute inset-0 w-full h-full object-cover"
           />
+
+          {gallery.length > 1 && (
+            <>
+              <button
+                type="button"
+                aria-label="Previous image"
+                onClick={prevImage}
+                className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/60 hover:bg-black/85 border border-white/20 text-white grid place-items-center backdrop-blur transition active:scale-90"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                aria-label="Next image"
+                onClick={nextImage}
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/60 hover:bg-black/85 border border-white/20 text-white grid place-items-center backdrop-blur transition active:scale-90"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+              </button>
+
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5">
+                {gallery.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    aria-label={`Go to image ${i + 1}`}
+                    onClick={() => setImageIdx(i)}
+                    className={`h-1.5 rounded-full transition-all ${
+                      i === safeImageIdx ? 'w-6 bg-lime-400' : 'w-1.5 bg-white/60 hover:bg-white'
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <span className="absolute top-4 right-4 z-10 text-[11px] font-bold tracking-widest px-2.5 py-1 rounded-full backdrop-blur bg-black/60 border border-white/15 text-zinc-200">
+                {safeImageIdx + 1}/{gallery.length}
+              </span>
+            </>
+          )}
+
           <span
             className={`absolute top-4 left-4 text-[11px] font-bold tracking-widest uppercase px-3 py-1 rounded-full backdrop-blur bg-black/60 border ${
               isSoldOut

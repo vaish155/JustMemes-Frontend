@@ -32,6 +32,7 @@ export interface Product {
   price: number;
   comparePrice?: number;
   imageUrl: string;
+  images?: string[];
   stock: number;
   size: Size[];
   colors: Color[];
